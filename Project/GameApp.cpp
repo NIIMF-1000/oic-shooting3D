@@ -10,6 +10,7 @@
 //INCLUDE
 #include	"GameApp.h"
 #include    "Player.h"
+#include	"Stage.h"
 
 
 //kamera
@@ -20,6 +21,8 @@ CDirectionalLight	gLight;
 CPlayer			gPleyer;
 //debakku
 bool			gbDebug = false;
+//sute-ji
+CStage			gStage;
 
 /*************************************************************************//*!
 		@brief			アプリケーションの初期化
@@ -44,9 +47,10 @@ MofBool CGameApp::Initialize(void){
 	CGraphicsUtilities::SetDirectionalLight(&gLight);
 
 	gPleyer.Load();
+	gStage.Load();
 
 	gPleyer.Initialize();
-			
+	gStage.Initialize();
 
 	
 	return TRUE;
@@ -61,6 +65,7 @@ MofBool CGameApp::Initialize(void){
 MofBool CGameApp::Update(void) {
 	//キーの更新
 	g_pInput->RefreshKey();
+	gStage.Update();
 
 	gPleyer.Update();
 
@@ -75,8 +80,11 @@ MofBool CGameApp::Update(void) {
 	CVector3 vup = CVector3(0, 1, 0);
 	cpos.x = posX;
 	tpos.x = posX;
+	vup.RotationZ(gPleyer.GetPosition().x / FIELD_HALF_X * MOF_ToRadian(10.0f));
 	gCamera.LookAt(cpos, tpos, vup);
 	gCamera.Update();
+
+
 
 	return TRUE;
 }
@@ -96,6 +104,7 @@ MofBool CGameApp::Render(void){
 
 	g_pGraphics->SetDepthEnable(TRUE);
 
+	gStage.Render();
 	gPleyer.Render();
 
 	if (gbDebug)
@@ -110,7 +119,7 @@ MofBool CGameApp::Render(void){
 	if (gbDebug)
 	{
 		gPleyer.RenderDebugText();
-			
+		gStage.RenderDebugText();
 	}
 
 	// 描画の終了
@@ -126,5 +135,6 @@ MofBool CGameApp::Render(void){
 *//**************************************************************************/
 MofBool CGameApp::Release(void){
 	gPleyer.Release();
+	gStage.Release();
 	return TRUE;
 }

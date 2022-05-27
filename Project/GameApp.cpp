@@ -11,6 +11,7 @@
 #include	"GameApp.h"
 #include    "Player.h"
 #include	"Stage.h"
+#include	"Stage1.h"
 
 
 //kamera
@@ -23,6 +24,8 @@ CPlayer			gPleyer;
 bool			gbDebug = false;
 //sute-ji
 CStage			gStage;
+#define			ENEMY_COUNT (20)
+CEnemy			gEnemyArray[ENEMY_COUNT];
 
 /*************************************************************************//*!
 		@brief			アプリケーションの初期化
@@ -50,7 +53,11 @@ MofBool CGameApp::Initialize(void){
 	gStage.Load();
 
 	gPleyer.Initialize();
-	gStage.Initialize();
+	gStage.Initialize(&gStg1EnemyStart);
+	for (int i = 0; i < ENEMY_COUNT; i++)
+	{
+		gEnemyArray[i].Initialize();
+	}
 
 	
 	return TRUE;
@@ -65,9 +72,14 @@ MofBool CGameApp::Initialize(void){
 MofBool CGameApp::Update(void) {
 	//キーの更新
 	g_pInput->RefreshKey();
-	gStage.Update();
+	gStage.Update(gEnemyArray,ENEMY_COUNT);
 
 	gPleyer.Update();
+
+	for (int i = 0; i < ENEMY_COUNT; i++)
+	{
+		gEnemyArray[i].Update();
+	}
 
 	if (g_pInput->IsKeyPush(MOFKEY_F1))
 	{
@@ -106,6 +118,10 @@ MofBool CGameApp::Render(void){
 
 	gStage.Render();
 	gPleyer.Render();
+	for (int i = 0; i < ENEMY_COUNT; i++)
+	{
+		gEnemyArray[i].Render();
+	}
 
 	if (gbDebug)
 	{
@@ -120,6 +136,10 @@ MofBool CGameApp::Render(void){
 	{
 		gPleyer.RenderDebugText();
 		gStage.RenderDebugText();
+		for (int i = 0; i < ENEMY_COUNT; i++)
+		{
+			gEnemyArray[i].RenderDebugText(i);
+		}
 	}
 
 	// 描画の終了

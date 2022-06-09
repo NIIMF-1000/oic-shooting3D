@@ -9,8 +9,7 @@ m_BG(),
 m_Scroll(0.0f),
 m_pEnemyStart(NULL),
 m_EnemyMesh(),
-m_EnemyNo(0)
-{
+m_EnemyNo(0){
 }
 
 /**
@@ -25,7 +24,6 @@ CStage::~CStage(){
  *
  */
 bool CStage::Load(){
-
 	if (!m_BG.CreateSprite("road.png"))
 	{
 		return false;
@@ -34,7 +32,6 @@ bool CStage::Load(){
 	{
 		return false;
 	}
-
 	return true;
 }
 
@@ -43,7 +40,6 @@ bool CStage::Load(){
  *
  */
 void CStage::Initialize(ENEMYSTART *pSt){
-
 	m_BG.m_Angle.x = MOF_MATH_HALFPI;
 	m_BG.m_Angle.y = MOF_MATH_HALFPI;
 	m_BG.m_Scale = Vector3(200, 200, 200);
@@ -52,7 +48,6 @@ void CStage::Initialize(ENEMYSTART *pSt){
 	m_Scroll = 0;
 	m_EnemyNo = 0;
 	m_pEnemyStart = pSt;
-
 }
 
 /**
@@ -72,6 +67,7 @@ void CStage::Update(CEnemy* ene,int ecnt){
 			}
 			ene[i].SetMesh(&m_EnemyMesh);
 			ene[i].Start(Vector3(m_pEnemyStart->PosX[m_EnemyNo], 0, 0));
+			break;
 		}
 		m_EnemyNo++;
 	}
@@ -84,7 +80,7 @@ void CStage::Update(CEnemy* ene,int ecnt){
 void CStage::Render(){
 	for (int i = 0; i < 2; i++)
 	{
-		m_BG.m_Position.z = 50.0f + fmodf(-m_Scroll,m_BG.m_Scale.z) + i * m_BG.m_Scale.z;
+		m_BG.m_Position.z = 50.0f + fmodf(-m_Scroll, m_BG.m_Scale.z) + i * m_BG.m_Scale.z;
 		m_BG.Update();
 		m_BG.Render();
 	}
@@ -97,7 +93,7 @@ void CStage::Render(){
 void CStage::RenderDebugText(){
 	//スクロール値の描画
 	CGraphicsUtilities::RenderString(10,10,MOF_XRGB(0,0,0),
-		"スクロール : %.0f",m_Scroll,m_EnemyNo);
+		"スクロール : %.0f , 敵の出現番号： %d",m_Scroll,m_EnemyNo);
 }
 
 /**

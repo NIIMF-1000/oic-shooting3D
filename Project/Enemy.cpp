@@ -1,14 +1,14 @@
 #include "Enemy.h"
 
-
 ANIM_DATA g_EnemyAnimPosY[2] = {
 	{1.0f,-10.0f,EASE_LINEAR},
 	{3.0f,0.0f,EASE_INOUT_SINE},
 };
+
 ANIM_DATA g_EnemyAnimPosZ[5] = {
 	{0.0f,-FIELD_HALF_Z,EASE_LINEAR},
 	{1.0f,FIELD_HALF_Z - 10.0f,EASE_LINEAR},
-	{2.0f,-FIELD_HALF_Z,EASE_OUT_SINE},
+	{2.0f,FIELD_HALF_Z,EASE_OUT_SINE},
 	{3.0f,FIELD_HALF_Z - 10.0f,EASE_IN_SINE},
 	{5.0f,-FIELD_HALF_Z,EASE_LINEAR},
 };
@@ -49,7 +49,7 @@ void CEnemy::Initialize(){
  *
  */
 void CEnemy::Start(const Vector3& p){
-	m_Pos =p;
+	m_Pos = p;
 	m_Rot = Vector3(0, 0, 0);
 	m_bShow = true;
 	m_AnimTime = 0;
@@ -61,21 +61,18 @@ void CEnemy::Start(const Vector3& p){
  *
  */
 void CEnemy::Update(){
-
 	if (!GetShow())
 	{
 		return;
 	}
-
 	m_AnimTime += CUtilities::GetFrameSecond();
-
 	m_Pos.y = InterpolationAnim(m_AnimTime, g_EnemyAnimPosY, 2);
 	m_Pos.z = InterpolationAnim(m_AnimTime, g_EnemyAnimPosZ, 5);
-
 	if (g_EnemyAnimPosZ[4].Time < m_AnimTime)
 	{
 		m_bShow = false;
 	}
+
 }
 
 /**
@@ -89,11 +86,9 @@ void CEnemy::Render(){
 	}
 	
 	CMatrix44 matWorld;
-	matWorld.RotationXYZ(m_Rot);
-	matWorld.SetTranslation(m_Rot);
+	matWorld.RotationZXY(m_Rot);
+	matWorld.SetTranslation(m_Pos);
 	m_pMesh->Render(matWorld);
-
-
 }
 
 /**

@@ -9,23 +9,22 @@
 
 //INCLUDE
 #include	"GameApp.h"
-#include    "Player.h"
+#include	"Player.h"
 #include	"Stage.h"
 #include	"Stage1.h"
 
+CCamera				gCamera;
 
-//kamera
-CCamera       gCamera;
-//raito
 CDirectionalLight	gLight;
-//pureiya
-CPlayer			gPleyer;
-//debakku
-bool			gbDebug = false;
-//sute-ji
-CStage			gStage;
-#define			ENEMY_COUNT (20)
-CEnemy			gEnemyArray[ENEMY_COUNT];
+
+CPlayer				gPlayer;
+
+#define				ENEMY_COUNT		(20)
+CEnemy				gEnemyArray[ENEMY_COUNT];
+
+CStage				gStage;
+//デバッグ表示フラグ
+bool				gbDebug = false;
 
 /*************************************************************************//*!
 		@brief			アプリケーションの初期化
@@ -37,29 +36,34 @@ CEnemy			gEnemyArray[ENEMY_COUNT];
 MofBool CGameApp::Initialize(void){
 	//リソース配置ディレクトリの設定
 	CUtilities::SetCurrentDirectory("Resource");
-
+	//カメラ初期化
 	gCamera.SetViewPort();
 	gCamera.LookAt(Vector3(0, 6.0f, -17.0f), Vector3(0, 0, -10), Vector3(0, 1, 0));
 	gCamera.PerspectiveFov(MOF_ToRadian(60.0f), 1024.0f / 768.0f, 0.01f, 1000.0f);
 	CGraphicsUtilities::SetCamera(&gCamera);
 
+	//ライト初期化
 	gLight.SetDirection(Vector3(-1, -2, 1.5f));
 	gLight.SetDiffuse(MOF_COLOR_WHITE);
 	gLight.SetAmbient(MOF_COLOR_HWHITE);
 	gLight.SetSpeculer(MOF_COLOR_WHITE);
 	CGraphicsUtilities::SetDirectionalLight(&gLight);
 
-	gPleyer.Load();
+	//プレイヤーの素材読み込み
+	gPlayer.Load();
+
 	gStage.Load();
 
-	gPleyer.Initialize();
+	//プレイヤーの状態初期化
+	gPlayer.Initialize();
+	
 	gStage.Initialize(&gStg1EnemyStart);
+
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
 		gEnemyArray[i].Initialize();
 	}
 
-	
 	return TRUE;
 }
 /*************************************************************************//*!
@@ -69,12 +73,13 @@ MofBool CGameApp::Initialize(void){
 		@return			TRUE		成功<br>
 						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
-MofBool CGameApp::Update(void) {
+MofBool CGameApp::Update(void){
 	//キーの更新
 	g_pInput->RefreshKey();
+
 	gStage.Update(gEnemyArray,ENEMY_COUNT);
 
-	gPleyer.Update();
+	gPlayer.Update();
 
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
@@ -86,18 +91,15 @@ MofBool CGameApp::Update(void) {
 		gbDebug = ((gbDebug) ? false : true);
 	}
 
-	float posX = gPleyer.GetPosition().x * 0.4F;
+	float posX = gPlayer.GetPosition().x * 0.4f;
 	CVector3 cpos = gCamera.GetViewPosition();
 	CVector3 tpos = gCamera.GetTargetPosition();
 	CVector3 vup = CVector3(0, 1, 0);
 	cpos.x = posX;
 	tpos.x = posX;
-	vup.RotationZ(gPleyer.GetPosition().x / FIELD_HALF_X * MOF_ToRadian(10.0f));
+	vup.RotationZ(gPlayer.GetPosition().x / FIELD_HALF_X * MOF_ToRadian(10.0f));
 	gCamera.LookAt(cpos, tpos, vup);
 	gCamera.Update();
-
-
-
 	return TRUE;
 }
 
@@ -117,7 +119,9 @@ MofBool CGameApp::Render(void){
 	g_pGraphics->SetDepthEnable(TRUE);
 
 	gStage.Render();
-	gPleyer.Render();
+
+	gPlayer.Render();
+
 	for (int i = 0; i < ENEMY_COUNT; i++)
 	{
 		gEnemyArray[i].Render();
@@ -134,9 +138,9 @@ MofBool CGameApp::Render(void){
 
 	if (gbDebug)
 	{
-		gPleyer.RenderDebugText();
 		gStage.RenderDebugText();
-		for (int i = 0; i < ENEMY_COUNT; i++)
+		gPlayer.RenderDebugText();
+		for(int i = 0; i < ENEMY_COUNT; i++)
 		{
 			gEnemyArray[i].RenderDebugText(i);
 		}
@@ -154,7 +158,7 @@ MofBool CGameApp::Render(void){
 						それ以外	失敗、エラーコードが戻り値となる
 *//**************************************************************************/
 MofBool CGameApp::Release(void){
-	gPleyer.Release();
+	gPlayer.Release();
 	gStage.Release();
 	return TRUE;
 }

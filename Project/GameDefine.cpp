@@ -36,5 +36,5 @@ float InterpolationAnim(float AnimTime, ANIM_DATA* AnimData, int cnt) {
 	// ï‚ä‘
 	float from = AnimData[phase - 1].Value;
 	float to = AnimData[phase].Value;
-	return from + (to - from) * t;
+	return from + (to - from) * t;++
 }

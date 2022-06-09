@@ -10,6 +10,7 @@ private:
 	bool				m_bShow;
 
 	float				m_AnimTime;
+	int					m_HP;
 
 public:
 	CEnemy();
@@ -21,4 +22,6 @@ public:
 	void RenderDebugText(int i);
 	void SetMesh(CMeshContainer* pm){ m_pMesh = pm; }
 	bool GetShow(){ return m_bShow; }
+	void RenderDebug() { return CSphere(m_Pos, 0.5f); }
+	void Damage(int dmg);
 };

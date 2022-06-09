@@ -139,6 +139,12 @@ void CPlayer::RenderDebugText(void){
 	// 位置の描画
 	CGraphicsUtilities::RenderString(10,40,MOF_XRGB(0,0,0),
 			"プレイヤー位置 X : %.1f , Y : %.1f , Z : %.1f",m_Pos.x,m_Pos.y,m_Pos.z);
+
+	CGraphicsUtilities::RenderSphere(GetSphere(), Vector4(0, 1, 0, 0.3f));
+	for (int i = 0; i < PLAYERSHOT_COUNT; i++)
+	{
+		m_ShotArray[i].RenderDedug();
+	}
 }
 
 /**
@@ -148,3 +154,4 @@ void CPlayer::Release(void){
 	m_Mesh.Release();
 	m_ShotMesh.Release();
 }
+
